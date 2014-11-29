@@ -1,47 +1,4 @@
-function cfs_getFileContents(name, nothrow, cont) {
-    chrome.fileSystem.chooseEntry({type: 'openFile'}, function(readOnlyEntry) {
-
-	readOnlyEntry.file(function(file) {
-	    var reader = new FileReader();
-
-	    reader.onerror = function(e) {
-		throw e;
-	    }
-	    reader.onloadend = function(e) {
-		cont(e.target.result, null); // second parameter is file stamp, on a real fs it should be last modification time
-	    };
-
-	    reader.readAsText(file);
-	});
-    });
-}
-
-function cfs_setFileContents(name, content) {
-    chrome.fileSystem.chooseEntry({type: 'saveFile'}, function(writableFileEntry) {
-	writableFileEntry.createWriter(function(writer) {
-	    writer.onerror = function(e) {
-		throw e;
-	    }
-	    writer.onwriteend = function(e) {
-                ymacs.getActiveBuffer().signalInfo("Saved.");
-	    };
-	    writer.write(new Blob([content], {type: 'text/plain'}));
-	}, function(e) {
-	    throw e;
-	});
-    });
-}
-
-ymacs.fs_getFileContents = function(name, nothrow, cont) {
-    cfs_getFileContents(name, nothrow, cont);
-};
-
-ymacs.fs_setFileContents = function(name, content, stamp, cont) {
-    cfs_setFileContents(name, content);
-    cont(null); // Use stamp when we have one
-};
-
-function cfs_open_file(file_entry) {
+function cfs_open_file(file_entry, override) {
     file_entry.file(function(file) {
         var reader = new FileReader();
 
@@ -52,10 +9,13 @@ function cfs_open_file(file_entry) {
             var buffer = ymacs.getBuffer(file_entry.name);
             if (!buffer) {
                 buffer = ymacs.createBuffer({name: file_entry.name, stamp: null});
+                override = true;
             }
-            buffer.setCode(contents.target.result || "");
-            buffer.stamp = null;
-            buffer.dirty(false);
+            if (override) {
+                buffer.setCode(contents.target.result || "");
+                buffer.stamp = null;
+                buffer.dirty(false);
+            }
             buffer.cmd("set_buffer_mode");
             buffer.cmd("switch_to_buffer", file_entry.name);
             buffer.chromeapp_entry = file_entry;
@@ -88,7 +48,7 @@ Ymacs_Buffer.COMMANDS["write_file"] = Ymacs_Interactive("iChoose file to write t
                                                   buffer.chromeapp_entry = open_file;
                                                   chrome.fileSystem.getDisplayPath(open_file, function (path) {
                                                       buffer.chromeapp_filename = path;
-                                                      buffer.signalInfo("Wrote " + path);
+                                                      buffer.setMinibuffer("Wrote " + path);
                                                   });
                                               };
                                               writer.write(new Blob([ymacs.getActiveBuffer().getCode()]), {type: 'text/plain'});
@@ -111,7 +71,7 @@ function cfs_save_buffer(buffer) {
                 writer.onwriteend = function (e) {
                     buffer.name = buffer.chromeapp_entry.name;
                     buffer.dirty(false);
-                    buffer.signalInfo("Wrote " + buffer.chromeapp_filename);
+                    buffer.setMinibuffer("Wrote " + buffer.chromeapp_filename);
                 };
                 writer.write(new Blob([buffer.getCode()]), {type: 'text/plain'});
             };
@@ -191,6 +151,16 @@ function save_buffers_safe_exit() {
 }
 
 Ymacs_Buffer.newCommands({
+
+    revert_buffer: Ymacs_Interactive(function() {
+        var buffer = ymacs.getActiveBuffer();
+        buffer.cmd("minibuffer_yn", "Revert buffer from file " + buffer.chromeapp_filename + "?",
+                   function (yes) {
+                       if (yes) {
+                           cfs_open_file(buffer.chromeapp_entry, true);
+                       }
+                   });
+    }),
 
     safe_exit: Ymacs_Interactive(function() {
         ymacs.modified_buffers_exist = false;

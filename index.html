@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Emacs for Chrome : Ymacs extended to work as a Chrome App and to use the Chrome filesystem.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Emacs for Chrome</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/pacew/ymacs">View on GitHub</a>
+
+          <h1 id="project_title">Emacs for Chrome</h1>
+          <h2 id="project_tagline">Ymacs extended to work as a Chrome App and to use the Chrome filesystem.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/pacew/ymacs/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/pacew/ymacs/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>The files in this directory allow ymacs to be packaged into a Chrome
+app, including support for the Chrome filesystem api.  The filesystem
+api is kind of clunky, but it is managable. </p>
+
+<p>We also add experimental support for some additional commands.  We
+hope that as this generic code settles, it can migrate to the ymacs
+core.</p>
+
+<p>The commands we add or modify are:</p>
+
+<p>C-x C-f find_file
+C-x C-w write_file
+C-x C-s save_file
+C-x s save_some_buffers
+C-x C-d list_directory (dired-like)
+M-% query_replace
+C-x C-c safe_exit (offer to save modified buffers, then exit)
+C-h c help_c (display function assigned to key)
+C-h m help_m (display commands defined in current keymaps)</p>
+
+<p>[search for defineKeys to make sure this list is complete]</p>
+
+<p>You can download the packaged version from</p>
+
+<p><a href="https://chrome.google.com/webstore/detail/emacs/pledjnbikkbieemanocnjeoacdcphlgf">https://chrome.google.com/webstore/detail/emacs/pledjnbikkbieemanocnjeoacdcphlgf</a></p>
+
+<p>Or, you can run it locally as an "unpacked extension".  To do this,
+start chrome, open the menu, click "More tools", then "Extensions" (or
+open the url chrome://extensions ).  Then, click the button "Load
+unpacked extension..." and select your ymacs development directory
+(the parent of the directory where this README file appears).</p>
+
+<p>We are grateful to Mihai Bazon for ymacs, and hope that you like our
+additions.  We're working at <a href="https://github.com/pacew/ymacs">https://github.com/pacew/ymacs</a> and will
+be happy to consider pull requests.</p>
+
+<p>Pace Willisson <a href="mailto:pace@alum.mit.edu">pace@alum.mit.edu</a>
+Eric Willisson <a href="mailto:ericwillisson@gmail.com">ericwillisson@gmail.com</a></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Emacs for Chrome maintained by <a href="https://github.com/pacew">pacew</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>

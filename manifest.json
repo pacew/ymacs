@@ -13,9 +13,9 @@
 	}
     },
     "icons": {
-	"128": "chromeapp/icon128.png",
-        "48": "chromeapp/icon48.png",
-	"16": "chromeapp/icon16.png"
+	"128": "chromeapp/third_party/icon128.png",
+        "48": "chromeapp/third_party/icon48.png",
+	"16": "chromeapp/third_party/icon16.png"
     },
     "permissions": [
 	{"fileSystem": ["write", "directory"]}
